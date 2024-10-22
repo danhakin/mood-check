@@ -1,20 +1,12 @@
-from flask import Flask, request, jsonify
+import streamlit as st
 from transformers import pipeline
-
-app = Flask(__name__)
 
 sentiment_pipeline = pipeline("sentiment-analysis", model="distilbert/distilbert-base-uncased-finetuned-sst-2-english")
 
-@app.route('/')
-def home():
-    return "Sentiment Analysis API"
+st.write("Sentiment Analysis App")
 
-@app.route('/analyze', methods=["POST"])
-def analyze():
-    data = request.json
-    text = data.get('text')
-    result = sentiment_pipeline(text)
-    return jsonify(result)
+st.text_input("Enter your text:", key="text")
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if (st.session_state.text != ""):
+    result = sentiment_pipeline(st.session_state.text)
+    st.write(result)
